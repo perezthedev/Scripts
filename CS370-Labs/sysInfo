@@ -1,4 +1,9 @@
 #!/bin/bash
+# Script written by Ryan Perez
+# UNLV CS 370 Computer Science Aug. 30, 2021
+# become familiar with basic bash commands
+# like grep, free, awk, hostname, uname,
+# arch, uptime and more.
 
 if [[ ${1} == "" ]]; then
  echo "Usage: sysInfo <sys|mem|disk>"
@@ -9,35 +14,36 @@ elif [[ !((${1} == 'sys') || (${1} == 'mem') || (${1} == 'disk')) ]]; then
 fi
 
 # -n command removes newline from echo
+# grep command searches a file for particular pattern of chars
+# uname pulls OS name
 if [[ ${1} == 'sys' ]]; then
- echo '-------------------------------System Information---------------'
- echo -e -n "Hostname:\t\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
- echo -e -n "uptime:\t\t\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
- echo -e -n "Manufacturer:\t\t"
- cat /sys/class/dmi/id/chassis_vendor | awk '{print $1, $2}'
- echo -e -n "Product Name:\t\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
- echo -e -n "Version:\t\t"
- cat /sys/class/dmi/id/board_version | awk '{print $1}'
- echo -e -n "Machine Type:\t\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
- echo -e -n "Operating System:\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
- echo -e -n "Kernel:\t\t\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
- echo -e -n "Architecture:\t\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
- echo -e -n "Processor Name:\t\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
- echo -e -n "Active User:\t\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
- echo -e -n "Main System IP:\t\t"
- cat /sys/class/dmi/id/board_name | awk '{print $1}'
+ echo -e '-------------------------------System Information---------------'
+ echo -e "Hostname:\t\t"`hostname`
+ echo -e "uptime:\t\t\t"`uptime | awk '{print $3, $4}' | sed 's/,//'`
+ echo -e "Manufacturer:\t\t"`cat /sys/class/dmi/id/chassis_vendor | awk '{print $1, $2}'`
+ echo -e "Product Name:\t\t"`cat /sys/class/dmi/id/product_name | awk '{print $1}'`
+ echo -e "Version:\t\t"`cat /sys/class/dmi/id/product_version`
+ echo -e "Machine Type:\t\t"`vserver=$(lscpu | grep Hypervisor | wc -l); if [ $vserver -gt 0 ]; then echo "VM"; else echo "Physical"; fi`
+ echo -e "Operating System:\t"`hostnamectl | grep "Operating System" | cut -d ' ' -f5-`
+ echo -e "Kernel:\t\t\t"`uname -r`
+ echo -e "Architecture:\t\t"`arch`
+ echo -e "Processor Name:\t\t"`awk -F':' '/^model name/ {print $2}' /proc/cpuinfo | uniq | sed -e 's/^[ \t]*//'`
+ echo -e "Active User:\t\t"`w | cut -d ' ' -f1 | grep -v USER | xargs -n1`
+ echo -e -n "Main System IP:\t\t"`hostname -I`
+ echo ""
 
 elif [[ ${1} == 'mem' ]]; then
- echo 'mem call'
+# line 30
+# free command -> provides total amount of physical and swap mem data
+ echo -e '--------------------------------CPU/Memory Usage-------------------------'
+ free
+ echo ""
+ echo -e "Memory Usage:\t"`free | awk '/Mem/{printf("%.2f%%"), $3/$2*100}'`
+ echo -e "Swap Usage:\t" `free | awk '/Swap/{printf("%.2f%%"), $3/$2*100}'`
+ echo -e "CPU Usage:\t"`cat /proc/stat | awk '/cpu/{printf("%.2f%%\n"), ($2+$4)*100/($2+$4+$5)}' | awk '{print $0}' | head -1`
 elif [[ ${1} == 'disk' ]]; then
- echo 'disk call'
+ echo -e '-----------------------------Disk Usage----------------------------'
+ df -h | awk '$NF=="/"{ printf "Disk Usage:%s\t\t\n\n", $5}'
+ echo ""
+ df -Ph | sed s/%//g | awk '{ if($5 > 80) print $0;}'
 fi
