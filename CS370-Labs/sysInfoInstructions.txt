@@ -1,0 +1,94 @@
+Lab Exercise (BASH)
+
+Learn to create basic BASH scripts.  Additionally, learn some about the AWK utility.
+
+Review the Command Line and Bash Information (specifically the Bash Guide).
+
+Create a bash script, sysInfo, that will read a command line argument and display information about either the system, memory, or disk usage.  Refer to the examples below.
+
+ 
+
+System Information
+
+The system information option, sys, should include the host name, uptime, manufacturer, product name, version, machine type, operating system, kernel version, architecture, processor name, active user, and main system IP address.
+
+You should become familiar with the hostname, uname, arch, uptime, and w commands.  The directory /sys/class/dmi/id/ contains some of the necessary information.  The applicable file can be displayed with the basic cat command.  For example, echo -e "Manufacturer:\t\t"`cat /sys/class/dmi/id/chassis_vendor`.  The output of a command can be piped to awk, for example, uptime | awk '{print $3,$4}' | sed 's/,//'. The processor name is located in a file, /proc/cpuinfo which contains a lot of detailed information.  The command awk -F':' '/^model name/ {print $2}' /proc/cpuinfo | uniq | sed -e 's/^[ \t]*//' will parse out the the processor name.  The command vserver=$(lscpu | grep Hypervisor | wc -l); if [ $vserver -gt 0 ]; then echo "VM"; else echo "Physical"; fi will get the machine type.
+
+For example, the output should be formatted as follows:
+
+ed$ ./sysInfo sys
+-------------------------------System Information----------------------------
+Hostname:               ed-VirtualBox
+uptime:                 4 min
+Manufacturer:           Oracle Corporation
+Product Name:           VirtualBox
+Version:                1.2
+Machine Type:           VM
+Operating System:       Ubuntu 18.04.4 LTS
+Kernel:                 5.4.0-42-generic
+Architecture:           x86_64
+Processor Name:         Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz
+Active User:            ed
+Main System IP:         10.0.2.15
+
+ 
+
+Memory
+
+The memory option, mem, should display the CPU/Memory Usage (free), memory usage percentage, swap usage percentage, and CPU usage percentage.  For the  CPU usage, use cat /proc/stat | awk '/cpu/{printf("%.2f%%\n"), ($2+$4)*100/($2+$4+$5)}' | awk '{print $0}' | head -1.
+
+You should become familiar with the free command and the file /proc/stat.
+
+For example, the output should be formatted as follows:
+
+ed$ ./sysInfo mem
+-------------------------------CPU/Memory Usage------------------------------
+total used free shared buff/cache available
+Mem: 22866292 736384 21329884 12700 800024 21795696
+Swap: 2097148 0 2097148
+
+Memory Usage:    3.22%
+Swap Usage:      0.00%
+CPU Usage:       1.49%
+
+ 
+
+Disk Space Usage
+
+The disk usage option, disk, should show the disk usage and the file systems.
+
+You should become familiar with the df command.
+
+The output of a command can be piped to awk, for example, df -h | awk '$NF=="/"{printf "Disk Usage: %s\t\t\n\n", $5}'
+
+For example, the output should be formatted as follows:
+
+ed$ ./sysInfo disk
+-------------------------------Disk Usage-------------------------------
+Disk Usage: 10%
+
+Filesystem Size Used Avail Use Mounted on
+/dev/loop0 1.0M 1.0M 0 100 /snap/gnome-logs/81
+/dev/loop2 161M 161M 0 100 /snap/gnome-3-28-1804/116
+/dev/loop1 55M 55M 0 100 /snap/core18/1668
+/dev/loop3 90M 90M 0 100 /snap/core/8268
+/dev/loop4 45M 45M 0 100 /snap/gtk-common-themes/1440
+/dev/loop5 15M 15M 0 100 /snap/gnome-characters/399
+/dev/loop6 4.3M 4.3M 0 100 /snap/gnome-calculator/544
+/dev/loop7 3.8M 3.8M 0 100 /snap/gnome-system-monitor/127
+
+ 
+
+Error Handling
+
+The script should handle some errors error such as invalid/incorrect option and no option provided.  The following are examples of the error handling:
+
+ed$ ./sysInfo 
+Usage: sysInfo <sys|mem|disk>
+
+and
+
+ed$ ./sysInfo bad
+Error, invalid parameter.
+
+

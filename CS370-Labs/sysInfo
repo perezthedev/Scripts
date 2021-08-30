@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ ${1} == "" ]; then
+ echo "Usage: sysInfo <sys|mem|disk>"
+ exit 0
+elif [[ !((${1} == 'sys') || (${1} == 'mem') || (${1} == 'disk')) ]]; then
+ echo 'Error, invalid parameter.'
+ exit 0
+fi
+
+if [ ${1} == 'sys' ]; then
+ echo -e -n "Manufacturer:\t\t"
+ cat /sys/class/dmi/id/chassis_vendor | awk '{print $1, $2}'
+elif [ ${1} == 'mem' ]; then
+ echo 'mem call'
+elif [ ${1} == 'disk' ]; then
+ echo 'disk call'
+fi
