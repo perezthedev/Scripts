@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ${1} == "" ]; then
+if [[ ${1} == "" ]]; then
  echo "Usage: sysInfo <sys|mem|disk>"
  exit 0
 elif [[ !((${1} == 'sys') || (${1} == 'mem') || (${1} == 'disk')) ]]; then
@@ -8,11 +8,36 @@ elif [[ !((${1} == 'sys') || (${1} == 'mem') || (${1} == 'disk')) ]]; then
  exit 0
 fi
 
-if [ ${1} == 'sys' ]; then
+# -n command removes newline from echo
+if [[ ${1} == 'sys' ]]; then
+ echo '-------------------------------System Information---------------'
+ echo -e -n "Hostname:\t\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
+ echo -e -n "uptime:\t\t\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
  echo -e -n "Manufacturer:\t\t"
  cat /sys/class/dmi/id/chassis_vendor | awk '{print $1, $2}'
-elif [ ${1} == 'mem' ]; then
+ echo -e -n "Product Name:\t\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
+ echo -e -n "Version:\t\t"
+ cat /sys/class/dmi/id/board_version | awk '{print $1}'
+ echo -e -n "Machine Type:\t\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
+ echo -e -n "Operating System:\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
+ echo -e -n "Kernel:\t\t\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
+ echo -e -n "Architecture:\t\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
+ echo -e -n "Processor Name:\t\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
+ echo -e -n "Active User:\t\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
+ echo -e -n "Main System IP:\t\t"
+ cat /sys/class/dmi/id/board_name | awk '{print $1}'
+
+elif [[ ${1} == 'mem' ]]; then
  echo 'mem call'
-elif [ ${1} == 'disk' ]; then
+elif [[ ${1} == 'disk' ]]; then
  echo 'disk call'
 fi
