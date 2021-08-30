@@ -1,2 +1,2 @@
 # JMeter-Scripts
-Contains scripts written for load testing
+Contains scripts written for different scenarios
