@@ -1,2 +1,1 @@
-# JMeter-Scripts
-Contains scripts written for different scenarios
+Contains scripts accumulated over time
