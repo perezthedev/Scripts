@@ -1,5 +1,7 @@
 #!/bin/sh
 ###############################################################################################
+# Obj: search a file for non-nucleotide characters
+# How:-----------------------------------------------------------------------------------------
 # inverse search a .FASTA file's header lines (which start with '>'), and 
 # color code anything that is not nucleotides (when '^' is used in brackets) (ATCG) in red
 # Exceptions:----------------------------------------------------------------------------------
