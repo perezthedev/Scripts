@@ -6,7 +6,7 @@
 # color code anything that is not nucleotides (when '^' is used in brackets) (ATCG) in red
 # Exceptions:----------------------------------------------------------------------------------
 # 'Y' can represent pyrimidine bases (C or T)
-# 'R' represents purine bases
+# 'R' represents purine bases (G or A)
 # 'D' represents A,G, or T
 ###############################################################################################
 
