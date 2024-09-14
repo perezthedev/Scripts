@@ -11,7 +11,7 @@
 
 
 # !CAUTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# 1) will overwrite  if the output file already exists
+# 1) will overwrite if the output file already exists
 
 search_term="/mnt/"
 
